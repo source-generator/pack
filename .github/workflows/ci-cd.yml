@@ -1,0 +1,21 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  release:
+    types: [published]
+
+jobs:
+  ci-cd:
+    uses: source-generator/actions/.github/workflows/dotnet-ci-cd.yml@main
+    with:
+      dotnet-version: "10.0.x"
+      project-path: "Pack.slnx"
+      publish-project-path: "Pack/Pack.csproj"
+      publish: ${{ github.event_name == 'release' }}
+      package-version: ${{ github.event.release.tag_name || '' }}
+    secrets:
+      nuget-api-key: ${{ secrets.NUGET_API_KEY }}
